@@ -38,7 +38,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Progress
-    m_EventTreshold: 98
+    m_EventTreshold: 198
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 7885458939808208828}
   m_Solo: 0
@@ -118,7 +118,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Progress
-    m_EventTreshold: 70
+    m_EventTreshold: 170
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -7056200639265421949}
   m_Solo: 0

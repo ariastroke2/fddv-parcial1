@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c91cf6a5ba6b39a41819d7f692f1ee24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cooldown: 100
+  Cooldown: 200
   Bullet: {fileID: 7795017799781655466, guid: 4da028a386fee70409cad8795ed5fae1, type: 3}
   finder: {fileID: 7340992784437710769}
   Target: {fileID: 0}
@@ -1226,6 +1226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfc464395409caf42ac9c8657478654c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomDefault: {fileID: 0}
 --- !u!58 &5811183017159259854
 CircleCollider2D:
   m_ObjectHideFlags: 0

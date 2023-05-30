@@ -5,6 +5,7 @@ using UnityEngine;
 public class TargetFinder : MonoBehaviour
 {
 
+    public GameObject CustomDefault;
     private GameObject FoundTargetObj;
 
     private Collider2D Range;
@@ -29,7 +30,7 @@ public class TargetFinder : MonoBehaviour
     void Update()
     {
         if(Inside.Count == 0){
-            FoundTargetObj = null;
+            FoundTargetObj = CustomDefault;
         }
         foreach (GameObject item in Inside) {
             if(FoundTargetObj == null){

@@ -73,6 +73,9 @@ public class OctoTrooper : MonoBehaviour
 						progress = 0;
 					}
 				}
+			}else{
+				progress = 9;
+				animator.SetInteger("Progress", 9);
 			}
 		}else{
 			if(SpawnC == 0){
@@ -90,7 +93,7 @@ public class OctoTrooper : MonoBehaviour
 						Vector2 newSpeed = new Vector2(direction.x * BulletSpeed, direction.y * BulletSpeed);
 						GameObject obj = (GameObject)Instantiate(Bullet, newPos, transform.rotation);
 						obj.GetComponent<Rigidbody2D>().velocity = newSpeed;
-						obj.GetComponent<Bullet_Behaviour>().dmg = 45;
+						obj.GetComponent<Bullet_Behaviour>().dmg = 25;
 						obj.GetComponent<TeamManager>().UpdateTeam(Team);
 	}
 

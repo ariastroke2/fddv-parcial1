@@ -35,10 +35,15 @@ public class Camera_Movement : MonoBehaviour
         // + (direction.x / Mathf.Abs(direction.x) * 15f)
 
         transform.position = new Vector3(target.transform.position.x + depsX,
-         target.transform.position.y + 10 + depsY, -10);
+         target.transform.position.y + 5 + depsY, -10);
+
+         if(transform.position.y <= 7){
+            transform.position = new Vector3(transform.position.x,
+            7f, -10);
+         }
 
          parallax.transform.position = new Vector3((target.transform.position.x + depsX) / 1.1f ,
-         (target.transform.position.y + 4 + depsY) / 1.1f , 0);
+         (target.transform.position.y + depsY) / 1.1f , 0);
          
 
     }

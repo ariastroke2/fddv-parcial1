@@ -4,73 +4,138 @@ using UnityEngine;
 
 public class EnemyTracker : MonoBehaviour
 {
-    public int OSenemies;
-    public GameObject s1, s2, s3, s4;
-    public int Difficulty;
+    private int OnScreenEnemies;
+    public GameObject[] Spawners;
 
-    public AudioClip levelup;
+    public GameObject MasterObjective;
+
     private AudioSource audio;
+    [SerializeField] private AudioClip Success;
 
-    public TMPro.TextMeshProUGUI enemiesdisplay;
+    private int Wave;
+    private int WaveLength;
+    private int WaveStep;
+    private int State;
 
-    private int TotalScore;
+    private int Timer;
 
-    private int ScreensClear = 0;
-
-    private GameObject[] randomizer;
-
-    // Start is called before the first frame update
     void Start()
     {
         audio = GetComponent<AudioSource>();
-        TotalScore = -1;
-        randomizer = new GameObject[4];
-        randomizer[0] = s1;
-        randomizer[1] = s2;
-        randomizer[2] = s3;
-        randomizer[3] = s4;
-        Difficulty = 1;
+        //TotalScore = -1;
+
+        for(int i = 0; i < Spawners.Length; i++){
+            Spawners[i].GetComponent<Spawner>().SetTracker(gameObject);
+            Spawners[i].GetComponent<Spawner>().SetMasterObjective(MasterObjective);
+        }
+        
+        WaveLength = 3;
+        WaveStep = WaveLength;
+        OnScreenEnemies = 0;
+        Wave = 6;
+        State = 10;
+        Timer = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //Debug.Log("Enemies on screen - "+OSenemies);
-        if(OSenemies == 0){
-            TotalScore += Difficulty;
-            enemiesdisplay.text = TotalScore + "";
-            audio.PlayOneShot(levelup);
-            Debug.Log("Generation Start");
-            switch(ScreensClear){
-                case 1:
-                    Difficulty = 2;
-                    break;
-                case 5:
-                    Difficulty = 3;
-                    break;
-                case 10:
-                    Difficulty = 4;
-                    break;
-            }
-            int[] chosen = {0, 1, 2, 3};
-
-            // Shuffle
-            for(int i = 0; i < 4; i++){
+        if(State == 0){
+            if(OnScreenEnemies == 0){
+                if(WaveStep > 0){
                 
-                int r = Random.Range(i, 4);
-                Debug.Log(" shuffling " + i + " and " + r);
-                int temp = chosen[i];
-                chosen[i] = chosen[r];
-                chosen[r] = temp;
-            }
+                    int[] WaveData = WaveGenerator(Wave);
 
-            for(int i = 0; i < 4; i++){
-                
-                if(i < Difficulty)
-                    randomizer[chosen[i]].GetComponent<Spawner>().Active = true;
+                    string msg = "";
+                    for(int i = 0; i < WaveData.Length; i++){
+                        msg += WaveData[i] + ", ";
+                    }
+                    Debug.Log("Wave " + Wave + " +-+ " + msg);
+
+                    
+                    Debug.Log("Feeding spawners, enemies on screen - "+OnScreenEnemies);
+                    for(int i = 0; i < Spawners.Length; i++){
+                        Spawners[i].GetComponent<Spawner>().FeedInput(WaveData[i]);
+                    }
+                WaveStep--;
+                }else{
+                    Wave++;
+                    Timer = 0;
+                    State = 10;
+                    WaveStep = WaveLength;
+                    audio.PlayOneShot(Success);
+                }
             }
-            OSenemies = Difficulty;
-            ScreensClear++;
+        }else{
+            Timer++;
+            if(Timer > 60){
+                State--;
+                Timer = 0;
+            }
         }
+    }
+
+    private int[] WaveGenerator(int wavegen){
+        int MaxDiff = (int)(Mathf.Round(wavegen / 2)) - 2;
+        int WaveScore = wavegen - 3;
+        int GeneratedEnemiesCounter = 0;
+
+        int[] Chances = new int[((MaxDiff * (MaxDiff + 1))/2) + 1];
+        int[] Generated = new int[Spawners.Length];
+
+        Chances[0] = 0;
+        for(int i = 1; i <= MaxDiff; i++){
+            for(int j = 0; j < i; j++){
+                Chances[i + j] = i;
+            }
+        }
+
+        int counter = 0;
+        while(counter < Spawners.Length && WaveScore > 0){
+
+            int Chosen = Chances[Random.Range(0, Chances.Length)];
+            WaveScore -= Chosen;
+            Generated[counter] = Chosen;
+            if(Chosen != 0)
+                GeneratedEnemiesCounter++;
+
+            counter++;
+        }
+        if(counter < Spawners.Length){
+            while(counter < Spawners.Length){
+                Generated[counter] = 0;
+                counter++;
+            }
+        }
+
+        for(int i = 0; i < Spawners.Length; i++){
+            int r = Random.Range(i, Spawners.Length);
+            int temp = Generated[i];
+            Generated[i] = Generated[r];
+            Generated[r] = temp;
+        }
+
+        OnScreenEnemies = GeneratedEnemiesCounter;
+
+        return Generated;
+    }
+
+    public int GetWave(){
+        return Wave - 5;
+    }
+
+    public int GetState(){
+        return State;
+    }
+
+    public int GetWaveStep(){
+        return WaveStep;
+    }
+
+    public int GetWaveLength(){
+        return WaveLength;
+    }
+
+    public void EnemyKilled(){
+        OnScreenEnemies--;
     }
 }

@@ -161,9 +161,9 @@ public class Splatling_Behav : MonoBehaviour
                 }
                 else
                 {
-                    obj.GetComponent<Rigidbody2D>().velocity = newSpeed * 0.25f;
+                    obj.GetComponent<Rigidbody2D>().velocity = newSpeed * 0.5f;
                     obj.GetComponent<Bullet_Behaviour>().size = 0.4f;
-                    obj.GetComponent<Bullet_Behaviour>().maxDistance = MaxRange * 0.5f;
+                    obj.GetComponent<Bullet_Behaviour>().maxDistance = MaxRange * 0.75f;
                     obj.GetComponent<Bullet_Behaviour>().dmg = 25;
                 }
             }

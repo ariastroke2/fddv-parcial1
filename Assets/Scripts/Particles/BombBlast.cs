@@ -56,15 +56,17 @@ public class BombBlast : MonoBehaviour
                 }
                 else
                 {
-                    if (!list.Contains(other.gameObject))
-                    {
-                        other.gameObject.GetComponent<LifeManager>().Damage(dmg);
-                        GameObject obj = (GameObject)Instantiate(
-                            Spark,
-                            other.gameObject.transform.position,
-                            transform.rotation
-                        );
-                        list.Add(other.gameObject);
+                    if(other.gameObject.GetComponent<LifeManager>() != null){
+                        if (!list.Contains(other.gameObject))
+                        {
+                            other.gameObject.GetComponent<LifeManager>().Damage(dmg);
+                            GameObject obj = (GameObject)Instantiate(
+                                Spark,
+                                other.gameObject.transform.position,
+                                transform.rotation
+                            );
+                            list.Add(other.gameObject);
+                        }
                     }
                 }
             }

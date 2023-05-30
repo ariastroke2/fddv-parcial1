@@ -116,6 +116,7 @@ public class Bomb_Behav : MonoBehaviour
             obj.GetComponent<Bullet_Behaviour>().maxDistance = 1000;
             obj.GetComponent<Bullet_Behaviour>().dmg = 30;
             obj.GetComponent<Bullet_Behaviour>().size = 0.8f;
+            obj.GetComponent<TeamManager>().UpdateTeam(Team);
         }
         audio.PlayOneShot(bombBlast);
         //gameObject.SetActive(false);

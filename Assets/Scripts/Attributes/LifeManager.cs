@@ -56,7 +56,7 @@ public class LifeManager : MonoBehaviour
                 gameObject.SetActive(false);
                 if(gameObject.GetComponent<OctoTrooper>() != null){
                     if(gameObject.GetComponent<OctoTrooper>().Notify != null)
-                        gameObject.GetComponent<OctoTrooper>().Notify.GetComponent<EnemyTracker>().OSenemies -= 1;
+                        gameObject.GetComponent<OctoTrooper>().Notify.GetComponent<EnemyTracker>().EnemyKilled();
                     gameObject.GetComponent<OctoTrooper>().Kill();
                 }
                 if(gameObject.GetComponent<Character_Controller>() != null){

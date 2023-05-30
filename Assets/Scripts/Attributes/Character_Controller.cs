@@ -24,9 +24,14 @@ public class Character_Controller : MonoBehaviour
 	private Rigidbody2D rigidBody;
 	private MousePointer_Full MPointer;
 
+	private int DownTime;
+	private bool DownPhase;
+	private List<GameObject> Phased;
+
 	// Start is called before the first frame update
 	void Start()
 	{
+		Phased = new List<GameObject>();
 		Application.targetFrameRate = 60;
 		GameOverCanva.SetActive(false);
 		rigidBody = GetComponent<Rigidbody2D>();
@@ -61,6 +66,24 @@ public class Character_Controller : MonoBehaviour
 		else
 			rigidBody.gravityScale = 10;
 
+		if (Input.GetAxisRaw("Vertical") < 0){
+			if(DownTime < 15){
+				DownTime++;
+			}else{
+				if(!DownPhase)
+					DownPhase = true;
+			}
+		}else{
+			if(DownPhase){
+				DownTime = 0;
+				DownPhase = false;
+				foreach (GameObject item in Phased) {
+					Physics2D.IgnoreCollision(item.GetComponent<Collider2D>(), GetComponent<Collider2D>(), false);
+				}
+				Phased.Clear();
+			}
+		}
+
 		if(transform.position.y < -30){
 			LifeManager oops = GetComponent<LifeManager>();
 			oops.Set(0);
@@ -80,6 +103,15 @@ public class Character_Controller : MonoBehaviour
 			obj.GetComponent<TeamManager>().UpdateTeam(2);
 			obj.GetComponent<Bullet_Behaviour>().phasing = true;
 			obj.gameObject.transform.localScale = new Vector2(0.6f, 0.6f);
+		}
+	}
+
+	private void OnCollisionStay2D(Collision2D other){
+		if(other.gameObject.GetComponent<PlatformEffector2D>() != null){
+			if(DownPhase){
+				Physics2D.IgnoreCollision(other.gameObject.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+				Phased.Add(other.gameObject);
+			}
 		}
 	}
 }

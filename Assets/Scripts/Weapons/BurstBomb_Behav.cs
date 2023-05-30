@@ -89,6 +89,7 @@ public class BurstBomb_Behav : MonoBehaviour
             obj.GetComponent<Bullet_Behaviour>().maxDistance = 1000;
             obj.GetComponent<Bullet_Behaviour>().dmg = 7;
             obj.GetComponent<Bullet_Behaviour>().size = 0.8f;
+            obj.GetComponent<TeamManager>().UpdateTeam(Team);
         }
         audio.PlayOneShot(bombBlast);
         //gameObject.SetActive(false);
@@ -100,12 +101,16 @@ public class BurstBomb_Behav : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (
-            other.gameObject.tag != "Particle"
-            && other.gameObject.tag != "Brella"
-            && other.gameObject.tag != "BrellaClose"
+            other.gameObject.GetComponent<LifeManager>() != null
+            || other.gameObject.tag == "Ground"
         )
         {
-            Detonate();
+            if(other.gameObject.GetComponent<TeamManager>() != null){
+                if(other.gameObject.GetComponent<TeamManager>().GetTeam() != Team)
+                    Detonate();
+            }else{
+                Detonate();
+            }
         }
     }
 
