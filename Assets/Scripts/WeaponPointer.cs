@@ -5,25 +5,28 @@ using UnityEngine;
 public class WeaponPointer : MonoBehaviour
 {
 
-    public GameObject dragPrefab;
-    public GameObject Shield;
-    public AudioClip shot;
-    public AudioClip ShieldOpen;
-    public AudioClip ShieldClose;
-    public AudioClip ShieldBreak;
-    public SpriteRenderer ShieldState;
-    public InkManager InkM;
+    [SerializeField] private GameObject shooterPrefab;
+    [SerializeField] private GameObject Shield;
+    [SerializeField] private AudioClip shot;
+    [SerializeField] private AudioClip ShieldOpen;
+    [SerializeField] private AudioClip ShieldClose;
+    [SerializeField] private AudioClip ShieldBreak;
+    [SerializeField] private SpriteRenderer ShieldState;
+    [SerializeField] private InkManager InkM;
 
-    public Sprite BrellaUP;
-    public Sprite BrellaDOWN;
+    [SerializeField] private Sprite BrellaUP;
+    [SerializeField] private Sprite BrellaDOWN;
 
-    public float OffsetY = 0;
-    public float OffsetX = 0;
-    public int Pellets = 10;
-    public int CustomCooldown = 420;
-    public float MaxPelletRange = 30f;
-    public float MinPelletRange = 25f;
-    public int ShieldRecover = 1000;
+    [SerializeField] private MousePointer_Full DirectionImport;
+
+    [SerializeField] private float OffsetY = 0;
+    [SerializeField] private float OffsetX = 0;
+    [SerializeField] private int Pellets = 10;
+    [SerializeField] private int CustomCooldown = 420;
+    [SerializeField] private float PelletSpeed;
+    [SerializeField] private float WeaponRNG;
+    [SerializeField] private int ShieldRecover;
+    [SerializeField] private int MaxRange;
 
     private AudioSource audio;
     private LifeManager BrellaHP;
@@ -47,15 +50,12 @@ public class WeaponPointer : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector2 direction = (
-            (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - 
-            ((Vector2)transform.position)
-        ).normalized;
+        Vector2 direction = DirectionImport.direction;
         transform.right = direction;
-
+        
         int dir;
 
-        if(direction.x < 0){
+        if(direction.x <= 0){
             transform.localScale = new Vector2(-1, -1);
             dir = -1;
         }
@@ -73,9 +73,10 @@ public class WeaponPointer : MonoBehaviour
                 audio.PlayOneShot(shot);
                 for(int i = 0; i < Pellets; i++){
                     Vector2 newPos = new Vector2(transform.position.x + (direction.x*2.5f)+Random.Range(-0.5f, 0.5f), transform.position.y+Random.Range(-0.5f, 0.5f) + (direction.y*1f));
-                    Vector2 newSpeed = new Vector2(direction.x*Random.Range(MinPelletRange, MaxPelletRange), direction.y*Random.Range(MinPelletRange, MaxPelletRange)+0.1f);
-                    GameObject obj = (GameObject)Instantiate(dragPrefab, newPos, transform.rotation);
+                    Vector2 newSpeed = new Vector2(direction.x*PelletSpeed+Random.Range(-WeaponRNG, WeaponRNG), direction.y*PelletSpeed+Random.Range(-WeaponRNG, WeaponRNG));
+                    GameObject obj = (GameObject)Instantiate(shooterPrefab, newPos, transform.rotation);
                     obj.GetComponent<Rigidbody2D>().velocity = newSpeed;
+                    obj.GetComponent<Bullet_Behaviour>().maxDistance = MaxRange;
                 }
                 if(shieldup == 0){
                     audio.PlayOneShot(ShieldOpen);

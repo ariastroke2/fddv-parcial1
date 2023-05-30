@@ -10,6 +10,8 @@ public class Arm_Manager : MonoBehaviour
 
     public SpriteRenderer upperarmrend, forearmrend;
 
+    [SerializeField] private MousePointer_Full DirectionImport;
+
     public float HalfLength = 1.2f;
 
     public float ShoulderX = 0;
@@ -31,10 +33,7 @@ public class Arm_Manager : MonoBehaviour
     void Update()
     {
 
-        Vector2 PreHand = (
-            (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - 
-            ((Vector2)transform.parent.transform.position)
-        ).normalized*HoldDistance + (Vector2)transform.parent.transform.position + new Vector2(HoldOffsetX, HoldOffsetY);
+        Vector2 PreHand = DirectionImport.direction*HoldDistance + (Vector2)transform.parent.transform.position + new Vector2(HoldOffsetX, HoldOffsetY);
 
         Vector2 HandPosition = (Vector2)PreHand;
         Vector2 ShoulderPosition = new Vector2(transform.position.x + ShoulderX, transform.position.y + ShoulderY);

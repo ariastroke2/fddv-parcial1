@@ -10,6 +10,8 @@ public class Camera_Movement : MonoBehaviour
     public float SensitivityX = 0;
     public float SensitivityY = 0;
 
+    [SerializeField] private MousePointer_Full DirectionImport; 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,8 +32,10 @@ public class Camera_Movement : MonoBehaviour
         //float depsX = 0f;
         //float depsY = 0f;
 
+        // + (direction.x / Mathf.Abs(direction.x) * 15f)
+
         transform.position = new Vector3(target.transform.position.x + depsX,
-         target.transform.position.y + 4 + depsY, -10);
+         target.transform.position.y + 10 + depsY, -10);
 
          parallax.transform.position = new Vector3((target.transform.position.x + depsX) / 1.1f ,
          (target.transform.position.y + 4 + depsY) / 1.1f , 0);
