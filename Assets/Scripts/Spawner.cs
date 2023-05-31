@@ -29,7 +29,7 @@ public class Spawner : MonoBehaviour
     private void Spawn(){
         Debug.Log("Octotrooper summoned, SpawnType - "+SpawnType);
         GameObject obj = (GameObject)Instantiate(Spawned[SpawnType], transform.position, transform.rotation);
-        obj.GetComponent<OctoTrooper>().finder.CustomDefault = MasterObjective;
-        obj.GetComponent<OctoTrooper>().Notify = Tracker;
+        obj.transform.Find("FinderRange").GetComponent<TargetFinder>().CustomDefault = MasterObjective;
+        obj.GetComponent<TrackedObject>().AssignTracker(Tracker);
     }
 }

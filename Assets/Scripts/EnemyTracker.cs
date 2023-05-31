@@ -33,7 +33,7 @@ public class EnemyTracker : MonoBehaviour
         WaveStep = WaveLength;
         OnScreenEnemies = 0;
         Wave = 6;
-        State = 10;
+        State = 1;
         Timer = 0;
     }
 
@@ -60,7 +60,7 @@ public class EnemyTracker : MonoBehaviour
                 }else{
                     Wave++;
                     Timer = 0;
-                    State = 10;
+                    State = 1;
                     WaveStep = WaveLength;
                     audio.PlayOneShot(Success);
                 }
@@ -136,6 +136,7 @@ public class EnemyTracker : MonoBehaviour
     }
 
     public void EnemyKilled(){
+        Debug.Log("Counter has gone down by one");
         OnScreenEnemies--;
     }
 }

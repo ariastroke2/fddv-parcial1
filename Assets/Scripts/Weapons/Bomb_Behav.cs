@@ -67,7 +67,6 @@ public class Bomb_Behav : MonoBehaviour
         if (Mathf.Abs(rb.velocity.y) < 0.05f)
         {
             onGround++;
-            Debug.Log("Bomb counter / " + onGround);
             if (onGround > 50 && onGround < 80)
             {
                 transform.GetChild(0).localScale += new Vector3(0.025f, 0.025f, 0f);
@@ -82,7 +81,6 @@ public class Bomb_Behav : MonoBehaviour
             }
             if (onGround > 120)
             {
-                Debug.Log("Bomb entered deletion phase");
                 Destroy(gameObject);
             }
             rb.velocity = new Vector2(rb.velocity.x * 0.9f, rb.velocity.y);

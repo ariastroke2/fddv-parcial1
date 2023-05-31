@@ -55,9 +55,10 @@ public class LifeManager : MonoBehaviour
             if(HP < 1){
                 gameObject.SetActive(false);
                 if(gameObject.GetComponent<OctoTrooper>() != null){
-                    if(gameObject.GetComponent<OctoTrooper>().Notify != null)
-                        gameObject.GetComponent<OctoTrooper>().Notify.GetComponent<EnemyTracker>().EnemyKilled();
                     gameObject.GetComponent<OctoTrooper>().Kill();
+                }
+                if(gameObject.GetComponent<OctoBomber>() != null){
+                    gameObject.GetComponent<OctoBomber>().Kill();
                 }
                 if(gameObject.GetComponent<Character_Controller>() != null){
                     gameObject.GetComponent<Character_Controller>().GameOverCanva.SetActive(true);

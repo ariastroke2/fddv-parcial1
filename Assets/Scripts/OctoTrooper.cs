@@ -6,17 +6,17 @@ public class OctoTrooper : MonoBehaviour
 {
 	public int Cooldown = 500;
 	public GameObject Bullet;
-	public TargetFinder finder;
-	public GameObject Target;
-	public GameObject Notify;
-	public Animator animator;
-	public GameObject SpawnAnim;
+	private TargetFinder finder;
+    private GameObject SpawnAnim;
+	private GameObject Target;
+	private Animator animator;
+
 	public float BulletSpeed;
-	public bool Cont = true;
+	private bool Cont = true;
 
 	private AudioSource audio;
-	public AudioClip SpawnS;
-	public AudioClip DieS;
+	public AudioClip SpawnSound;
+	public AudioClip DieSound;
 
 	private int progress = 0;
 	private int dir = 0;
@@ -30,14 +30,17 @@ public class OctoTrooper : MonoBehaviour
 
 	void Start(){
 		Team = GetComponent<TeamManager>().GetTeam();
+		finder = transform.Find("FinderRange").GetComponent<TargetFinder>();
+		SpawnAnim = transform.Find("Spawner").gameObject;
 		progress = Random.Range(0, Cooldown);
 
 		MyRenderer = GetComponent<SpriteRenderer>();
 		audio = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
 
 		MyRenderer.enabled = false;
 		SpawnAnim.SetActive(false);
-		audio.PlayOneShot(SpawnS);
+		audio.PlayOneShot(SpawnSound);
 
 		main = Camera.main;
 	}
@@ -124,7 +127,10 @@ public class OctoTrooper : MonoBehaviour
 
 	public void Kill() // Destruye al enemigo, es la "animacion" de muerte del enemigo.
 	{
-		AudioSource.PlayClipAtPoint(DieS, main.transform.position);
+		if(GetComponent<TrackedObject>() != null)
+			if(GetComponent<TrackedObject>().IsActive())
+				GetComponent<TrackedObject>().SendSignal();
+		AudioSource.PlayClipAtPoint(DieSound, main.transform.position);
 		for(int i = 0; i < 10; i++){
 			Vector2 newPos = new Vector2(transform.position.x, transform.position.y);
 			Vector2 newSpeed = new Vector2(Random.Range(-6f, 6f), Random.Range(5f, 8f));
@@ -135,5 +141,10 @@ public class OctoTrooper : MonoBehaviour
 			obj.GetComponent<TeamManager>().UpdateTeam(Team);
 			obj.gameObject.transform.localScale = new Vector2(0.6f, 0.6f);
 		}
+	}
+
+	
+	public TargetFinder TargetSettings(){
+		return finder;
 	}
 }
