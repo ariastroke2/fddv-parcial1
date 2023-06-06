@@ -9,6 +9,8 @@ TagManager:
   - Brella
   - Particle
   - BrellaClose
+  - Weapon
+  - WeaponChanger
   layers:
   - Default
   - TransparentFX
