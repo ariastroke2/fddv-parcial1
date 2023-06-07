@@ -43,11 +43,13 @@ public class UiObjective : MonoBehaviour
             DisplayHP.fillAmount = (ObjectiveHP.Life()) * 1f / ObjMaxHP;
             TextDisplay.text = "Oleada " + (WaveProgress.GetWave());
         }else{
-            TextDisplay.text = "Completada";
-            BigSign.text = "Oleada " + WaveProgress.GetWave() + " en " + WaveProgress.GetState();
-            ObjectiveHP.Set(ObjMaxHP);
-            DisplayProgress.fillAmount = 1f;
-            DisplayHP.fillAmount = (ObjectiveHP.Life()) * 1f / ObjMaxHP;
+            if(ObjectiveHP.Life() > 0){
+                TextDisplay.text = "Completada";
+                BigSign.text = "Oleada " + WaveProgress.GetWave() + " en " + WaveProgress.GetState();
+                ObjectiveHP.Set(ObjMaxHP);
+                DisplayProgress.fillAmount = 1f;
+                DisplayHP.fillAmount = (ObjectiveHP.Life()) * 1f / ObjMaxHP;
+            }
         }
         if(ObjectiveHP.Life() < 1){
             AnimateTimer += Time.deltaTime;

@@ -11,6 +11,8 @@ public class UI_behavior : MonoBehaviour
     public Image Charge;
     public Image Bombs;
     public Image Weapon;
+    public Image BombType;
+    public Image FadeAnimator;
     public GameObject target;
 
     private LifeManager DisplayLifeOf;
@@ -26,9 +28,8 @@ public class UI_behavior : MonoBehaviour
     private int LifeAnim;
     private int Animation;
 
-    public Sprite Brella;
-    public Sprite Shooter;
-    public Sprite Splatling;
+    public Sprite[] Brellas;
+    public Sprite[] BombsSprites;
 
     // Start is called before the first frame update
 
@@ -37,6 +38,8 @@ public class UI_behavior : MonoBehaviour
         DisplayLifeOf = target.GetComponent<LifeManager>();
         DisplayInk = target.GetComponent<InkManager>();
         DisplayBomb = target.GetComponent<BombManager>();
+
+        target.GetComponent<Character_Controller>().Enter(new Vector2(-80f, 40f));
             
         Bombs.fillAmount = 1f;
         MaxLife = DisplayLifeOf.Life();
@@ -76,6 +79,10 @@ public class UI_behavior : MonoBehaviour
 
         //Bombs.fillAmount = (DisplayBomb.bombs * ((DisplayBomb.CustomCooldown - DisplayBomb.cooldown) / DisplayBomb.CustomCooldown)) / 5;
         Bombs.fillAmount =  (((DisplayBomb.GetCurrentCooldownType() - DisplayBomb.CurrentCooldownProgress()) * 1f / DisplayBomb.GetCurrentCooldownType()));
+
+        BombType.sprite = BombsSprites[DisplayBomb.bombtype];
+
+        FadeAnimator.color = new Color(0,0,0,(130 - Time.time * 50) / 100);
     }
 
     private GameObject Retrieve(string a){
@@ -94,7 +101,6 @@ public class UI_behavior : MonoBehaviour
         DisplayCharge = null;
         DisplayCool = null;
 
-        //GameObject temp = Retrieve("Splatling");
         if(param == "Splatling")
         {
             Debug.Log("Splatling settings");
@@ -106,53 +112,24 @@ public class UI_behavior : MonoBehaviour
             Debug.Log("Brella found");
             DisplayCool = settings.GetComponent<Brella_Behav>();                            
             MaxCharge = DisplayCool.CustomCooldown;
+            switch(MaxCharge){
+                case 45:
+                    Weapon.sprite = Brellas[0];
+                    break;
+                case 75:
+                    Weapon.sprite = Brellas[1];
+                    break;
+                case 15:
+                    Weapon.sprite = Brellas[2];
+                    break;
+            }
         }
         if(param == "Shooter"){
             Debug.Log("No special script not found");    
         }
-        Weapon.sprite = settings.transform.Find("Shooter").GetComponent<SpriteRenderer>().sprite;
+        if(param != "Brella")
+            Weapon.sprite = settings.transform.Find("Shooter").GetComponent<SpriteRenderer>().sprite;
         
         
-        /*else{
-                temp = Retrieve("TentaBrella");                                                 
-                if(temp != null)
-                {
-                    Debug.Log("TentaBrella found");
-                    DisplayCool = temp.GetComponent<Brella_Behav>();
-                    MaxCharge = DisplayCool.CustomCooldown;
-                    Weapon.sprite = Brella;
-                }else{
-                    temp = Retrieve("UndercoverBrella");                                                 
-                    if(temp != null)
-                    {
-                        Debug.Log("UndercoverBrella found");
-                        DisplayCool = temp.GetComponent<Brella_Behav>();
-                        MaxCharge = DisplayCool.CustomCooldown;
-                        Weapon.sprite = Brella;
-                    }else{
-                        temp = Retrieve("HydraSplatling");                                                 
-                    if(temp != null)
-                    {
-                        Debug.Log("HydraSplatling found");
-                        DisplayCharge = temp.GetComponent<Splatling_Behav>();
-                        MaxCharge = DisplayCharge.MaxCharge;
-                        Weapon.sprite = Brella;
-                    }else{
-                        temp = Retrieve("MiniSplatling");                                                 
-                    if(temp != null)
-                    {
-                        Debug.Log("MiniSplatling found");
-                        DisplayCharge = temp.GetComponent<Splatling_Behav>();
-                        MaxCharge = DisplayCharge.MaxCharge;
-                        Weapon.sprite = Brella;
-                    }else{
-                        Debug.Log("No special script not found");    
-                        Weapon.sprite = Shooter;            
-                    }                 
-                    }                  
-                                     
-                }           
-            }
-        }*/
     }
 }

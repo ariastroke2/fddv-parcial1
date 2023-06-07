@@ -28,6 +28,8 @@ public class Character_Controller : MonoBehaviour
 	private int state;
 	private int timer;
 
+	private bool EnterAnimation = false;
+
 	private Camera main;
 
 	private Rigidbody2D rigidBody;
@@ -43,7 +45,9 @@ public class Character_Controller : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		gameObject.tag = "Player";
+		gameObject.tag = "Player";		
+		state = 0;
+		timer = 0;
 		audio = GetComponent<AudioSource>();
 		Phased = new List<GameObject>();
 		Application.targetFrameRate = 60;
@@ -52,8 +56,8 @@ public class Character_Controller : MonoBehaviour
 		life = GetComponent<LifeManager>();
 		MPointer = GetComponent<MousePointer_Full>();
 		main = Camera.main;
-		state = 0;
-		timer = 0;
+		if(EnterAnimation)
+			EnterLaunch();
 	}
 
 	// Update is called once per frame
@@ -129,8 +133,14 @@ public class Character_Controller : MonoBehaviour
 			}
 			if(transform.position.x < RespawnX + RespawnExit && transform.position.x > RespawnX - RespawnExit){
 				if(transform.position.y < RespawnY + RespawnExit && transform.position.y > RespawnY - RespawnExit){
-					if(rigidBody.velocity.y < 0)
-						Regenerate();
+					if(rigidBody.velocity.y < 0){
+						if(state == 1)
+							Regenerate();
+						else if(state == 2)
+							Destroy(gameObject);
+						else if(state == 3)
+							JumpLand();
+					}
 				}
 			}
 		}
@@ -138,6 +148,7 @@ public class Character_Controller : MonoBehaviour
 	}
 
 	private void FewParticles(int howMany){
+		animator.SetInteger("State", 1);
 		for(int i = 0; i < howMany; i++){
 			GameObject obj = (GameObject)Instantiate(particle, transform.position, transform.rotation);
 			obj.GetComponent<Rigidbody2D>().velocity = rotate(-rigidBody.velocity * 0.8f, Random.Range(-Mathf.PI / 4, Mathf.PI / 4));
@@ -147,6 +158,58 @@ public class Character_Controller : MonoBehaviour
 			obj.GetComponent<Bullet_Behaviour>().size = 1f;
 			obj.GetComponent<Bullet_Behaviour>().phasing = true;
 		}
+	}
+
+	public void Exit(Vector2 ExitJump){
+
+		gameObject.tag = "Particle";
+		state = 2;
+		timer = 250;
+		GetComponent<Collider2D>().enabled = false;
+		for(int i = 0; i < transform.childCount; i++){
+			transform.GetChild(i).gameObject.SetActive(false);
+		}
+		transform.Find("BodySprite").gameObject.SetActive(true);
+
+		animator.SetInteger("State", 1);
+		animator.SetFloat("SpeedX", 0);
+		animator.SetFloat("SpeedY", 0);
+
+		audio.PlayOneShot(respawnJump);
+
+		rigidBody.velocity = Trajectory(ExitJump, 20f);
+
+		RespawnX = ExitJump.x;
+		RespawnY = ExitJump.y;
+
+		rigidBody.isKinematic = false;
+	}
+
+	public void Enter(Vector2 EnterJump){
+		
+		EnterAnimation = true;
+		transform.position = EnterJump;
+
+	}
+
+	private void EnterLaunch(){
+		gameObject.tag = "Particle";
+		timer = 250;
+		state = 3;
+		GetComponent<Collider2D>().enabled = false;
+		for(int i = 0; i < transform.childCount; i++){
+			transform.GetChild(i).gameObject.SetActive(false);
+		}
+		transform.Find("BodySprite").gameObject.SetActive(true);
+
+
+		animator.SetInteger("State", 1);
+
+		audio.PlayOneShot(respawnJump);
+		
+
+		rigidBody.velocity = Trajectory(new Vector2(RespawnX, RespawnY), 20f);
+		rigidBody.isKinematic = false;
 	}
 
 	public void Regenerate(){
@@ -162,8 +225,22 @@ public class Character_Controller : MonoBehaviour
 		}
 	}
 
+	public void JumpLand(){
+		animator.SetInteger("State", 0);
+		audio.PlayOneShot(respawnJumpLand);
+		state = 0;
+		gameObject.tag = "Player";
+		bodysprite.transform.right = new Vector2(0, 0);
+		GetComponent<Collider2D>().enabled = true;
+		for(int i = 0; i < transform.childCount; i++){
+			transform.GetChild(i).gameObject.SetActive(true);
+		}
+	}
+
 	private void RegenAnim(){
 		animator.SetInteger("State", 1);
+		animator.SetFloat("SpeedX", 0);
+		animator.SetFloat("SpeedY", 0);
 		audio.PlayOneShot(respawnJump);
 		rigidBody.velocity = Trajectory(new Vector2(RespawnX, RespawnY), 20f);
 		rigidBody.isKinematic = false;

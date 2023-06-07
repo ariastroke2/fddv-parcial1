@@ -13,6 +13,7 @@ public class EnemyTracker : MonoBehaviour
     private GameObject CurrentWeaponBox;
 
     private LevelUpdater lvlUpd;
+    private NonLoopingBGM BGM;
 
     private AudioSource audio;
     [SerializeField] private AudioClip Success;
@@ -26,6 +27,7 @@ public class EnemyTracker : MonoBehaviour
 
     void Start()
     {
+        BGM = GameObject.Find("BGM").GetComponent<NonLoopingBGM>();
         audio = GetComponent<AudioSource>();
         lvlUpd = GetComponent<LevelUpdater>();
         //TotalScore = -1;
@@ -76,6 +78,12 @@ public class EnemyTracker : MonoBehaviour
             if(Timer > 60){
                 State--;
                 Timer = 0;
+
+                if(State == 0){
+                    if(BGM != null){
+                        BGM.Play();
+                    }
+                }
 
                 if((Wave + 6)%4 == 0 && Wave != 6){
                     if(State == 9){

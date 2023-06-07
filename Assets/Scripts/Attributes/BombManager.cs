@@ -40,7 +40,7 @@ public class BombManager : MonoBehaviour
             - ((Vector2)transform.position)
         );
 
-        if (bombtype != 1)
+        if (bombtype == 2)
             if (direction.magnitude > 15)
             {
                 float x = direction.magnitude / 15f;
@@ -67,5 +67,15 @@ public class BombManager : MonoBehaviour
                 obj.GetComponent<TeamManager>().UpdateTeam(Team);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.E) && cooldown == 0)
+        {
+            ChangeBombType();
+        }
+    }
+
+    private void ChangeBombType()
+    {
+        bombtype = (bombtype + 1) % BombPrefab.Length;
     }
 }

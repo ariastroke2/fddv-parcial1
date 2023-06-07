@@ -6,10 +6,10 @@ public class TargetFinder : MonoBehaviour
 {
 
     public GameObject CustomDefault;
-    private GameObject FoundTargetObj;
+    public GameObject FoundTargetObj;
 
     private Collider2D Range;
-    private List<GameObject> Inside;
+    public List<GameObject> Inside;
 
     private int Team;
     
@@ -30,23 +30,33 @@ public class TargetFinder : MonoBehaviour
     void Update()
     {
         if(Inside.Count == 0){
-            FoundTargetObj = CustomDefault;
+            if(CustomDefault != null)
+                FoundTargetObj = CustomDefault;
+            else
+                FoundTargetObj = null;
         }
         foreach (GameObject item in Inside) {
-            if(FoundTargetObj == null){
-                FoundTargetObj = item;
+            if(item.CompareTag("Particle")){
+                if(FoundTargetObj == item)
+                    FoundTargetObj = null;
+                Debug.Log("Forgot " + item.name + " because it was tagged as particle");
+                Inside.Remove(item);
             }else{
-            float distanceOld = (
-						(Vector2)FoundTargetObj.transform.position - 
-						(Vector2)transform.position
-					).magnitude;
-            float distance = (
-						(Vector2)item.transform.position - 
-						(Vector2)transform.position
-					).magnitude;
-            if(distanceOld > distance){
-                FoundTargetObj = item;
-            }
+                if(FoundTargetObj == null){
+                    FoundTargetObj = item;
+                }else{
+                    float distanceOld = (
+                                (Vector2)FoundTargetObj.transform.position - 
+                                (Vector2)transform.position
+                            ).magnitude;
+                    float distance = (
+                                (Vector2)item.transform.position - 
+                                (Vector2)transform.position
+                            ).magnitude;
+                    if(distanceOld > distance){
+                        FoundTargetObj = item;
+                    }
+                }
             }
         }
     }
@@ -55,14 +65,17 @@ public class TargetFinder : MonoBehaviour
         if(other.gameObject.tag != "Particle" && other.gameObject.tag != "Ground"){
             if(Team != other.gameObject.GetComponent<TeamManager>().GetTeam()){
                 Inside.Add(other.gameObject);
+                Debug.Log("Found player");
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other){
-        if(other.gameObject.tag != "Particle" && other.gameObject.tag != "Ground"){
-            if(Inside.Contains(other.gameObject))
-                Inside.Remove(other.gameObject);
+        if(Inside.Contains(other.gameObject)){
+            Debug.Log("Forgot " + other.gameObject.name + " because it exited range");
+            Inside.Remove(other.gameObject);
+            if(FoundTargetObj == other.gameObject)
+                FoundTargetObj = null;
         }
     }
 }

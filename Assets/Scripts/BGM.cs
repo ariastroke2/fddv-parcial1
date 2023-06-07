@@ -10,13 +10,11 @@ public class BGM : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        musicSource.PlayOneShot(musicStart);
-        musicSource.PlayScheduled(AudioSettings.dspTime + musicStart.length);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(musicStart != null){
+            musicSource.PlayOneShot(musicStart);
+            musicSource.PlayScheduled(AudioSettings.dspTime + musicStart.length);
+        }else{
+            musicSource.PlayScheduled(AudioSettings.dspTime);
+        }
     }
 }

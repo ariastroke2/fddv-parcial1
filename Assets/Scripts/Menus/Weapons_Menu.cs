@@ -14,6 +14,8 @@ public class Weapons_Menu : MonoBehaviour
     private GameObject currentWeapon; // Reference to the current weapon instance
     public GameObject DestroyExplosion;
 
+    public int[] FixedValues;
+
     private int[] ChosenWeapons;
 
     private Transform cont;
@@ -49,30 +51,27 @@ public class Weapons_Menu : MonoBehaviour
     {
         playerObject = GameObject.Find("Player");
         cont = transform.Find("DisplayContainer");
-        if (currentWeapon == null)
+        if (FixedValues.Length == 0)
         {
-            // Instantiate the initial weapon prefab as a child of the player object
-            //int weaponIndex = currentIndex % weaponPrefabs.Length;
-            //currentWeapon = Instantiate(weaponPrefabs[weaponIndex], playerObject.transform);
-
-            // Adjust the position and rotation of the weapon based on your needs
-            //currentWeapon.transform.localPosition = Vector3.zero;
-            //currentWeapon.transform.localRotation = Quaternion.identity;
+            ChosenWeapons = new int[3];
+            for(int i = 0; i < 3; i++){
+                int x = Random.Range(0, weaponPrefabs.Length);
+                ChosenWeapons[i] = x;
+                cont.GetChild(i).GetComponent<SpriteRenderer>().sprite = sprites[x];
+                //cont.GetChild(i).gameObject.SetActive(false);
+            }
         }
         else
         {
-            // Set the position and rotation of the existing weapon based on your needs
-            //currentWeapon.transform.localPosition = Vector3.zero;
-            //currentWeapon.transform.localRotation = Quaternion.identity;
+            ChosenWeapons = new int[3];
+            for(int i = 0; i < 3; i++){
+                ChosenWeapons[i] = FixedValues[i];
+                cont.GetChild(i).GetComponent<SpriteRenderer>().sprite = sprites[FixedValues[i]];
+                //cont.GetChild(i).gameObject.SetActive(false);
+            }
         }
-
-        ChosenWeapons = new int[3];
-        for(int i = 0; i < 3; i++){
-            int x = Random.Range(0, weaponPrefabs.Length);
-            ChosenWeapons[i] = x;
-            cont.GetChild(i).GetComponent<SpriteRenderer>().sprite = sprites[x];
-            //cont.GetChild(i).gameObject.SetActive(false);
-        }
+        
+        
 
         // Set the initial sprite
         //imageComponent.sprite = sprites[currentIndex];
